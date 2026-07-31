@@ -1,0 +1,167 @@
+using array assishnment 1
+
+
+#include<iostream>
+using namespace std;
+
+#define MAX 10
+
+class Flight {
+public:
+	int time[MAX][MAX], fuel[MAX][MAX];
+	string cities[MAX];
+	int source, destination;
+	int city;
+	void readCity();
+	void readTime();
+	void readFuel();
+	void displayTime();
+	void displayFuel();
+	void path();
+	void connectivity();
+};
+
+void Flight :: readCity() {
+	cout<<"Enter the number of cities: ";
+	cin>>city;
+	for(int i=0; i<city; i++) {
+		cout<<"Enter the city "<<i<<": ";
+		cin>>cities[i];
+	}
+}
+
+void Flight :: readTime() {
+	for(int i=0; i<city; i++) {
+		for(int j=0; j<city; j++) {
+			cout<<"Enter the time required to travel from "<<i<<" to "<<j<<" (0 if no link): ";
+			cin>>time[i][j];
+		}
+	}
+}
+
+void Flight :: displayTime() {
+	cout<<"Time Matrix is: "<<endl;
+	for(int i=0; i<city; i++) {
+		for(int j=0; j<city; j++) {
+			cout<<time[i][j]<<"  ";
+		}
+		cout<<endl;
+	}
+}
+
+void Flight :: readFuel() {
+	for(int i=0; i<city; i++) {
+		for(int j=0; j<city; j++) {
+			cout<<"Enter the fuel required to travel from "<<i<<" to "<<j<<" (0 if no link): ";
+			cin>>fuel[i][j];
+		}
+	}
+}
+
+void Flight :: displayFuel() {
+	cout<<"Fuel Matrix is: "<<endl;
+	for(int i=0; i<city; i++) {
+		for(int j=0; j<city; j++) {
+			cout<<fuel[i][j]<<"  ";
+		}
+		cout<<endl;
+	}
+}
+
+void Flight :: path() {
+	cout<<"Enter the source: ";
+	cin>>source;
+	cout<<"Enter the destination: ";
+	cin>>destination;
+	if(time[source][destination] != 0) {
+		cout<<"Path Exists"<<endl;
+	}
+	else {
+		cout<<"No Path"<<endl;
+	}
+}
+
+void Flight :: connectivity() {
+	cout<<"Enter the source: ";
+	cin>>source;
+	cout<<"Enter the destination: ";
+	cin>>destination;
+	if(time[source][destination] != 0) {
+		cout<<"Direct path exists"<<endl;
+	}
+	else {
+		for(int i=0; i<city; i++) {
+			if(time[source][i] != 0 && time[i][destination] !=0 ) {
+				cout<<"Path exists through "<<i<<endl;
+				break;
+			}
+		}
+	}
+}
+
+int main() {
+	Flight obj;
+	int choice;
+	
+	do {
+		cout<<"1. Read the Cities"<<endl;
+		cout<<"2. Read Time"<<endl;
+		cout<<"3. Display Time"<<endl;
+		cout<<"4. Read Fuel"<<endl;
+		cout<<"5. Display fuel"<<endl;
+		cout<<"6. Check if path exists"<<endl;
+		cout<<"7. Check connectivity (direct or indirect)"<<endl;
+		cout<<"0. Exit"<<endl;
+		cout<<"Enter the choice: ";
+		cin>>choice;
+		
+		switch(choice) {
+			case 1: {
+				obj.readCity();
+				break;
+			}
+			
+			case 2: {
+				obj.readTime();
+				break;
+			}
+			
+			case 3: {
+				obj.displayTime();
+				break;
+			}
+			
+			case 4: {
+				obj.readFuel();
+				break;
+			}
+			
+			case 5: {
+				obj.displayFuel();
+				break;
+			}
+			
+			case 6: {
+				obj.path();
+				break;
+			}
+			
+			case 7: {
+				obj.connectivity();
+				break;
+			}
+			
+			case 0: {
+				cout<<"Exiting..."<<endl;
+				break;
+			}
+			
+			default: {
+				cout<<"Invalid Choice!"<<endl;
+				break;	
+			}
+		} 
+	} while(choice != 0);    
+	
+	return 0;                                                                             
+}
