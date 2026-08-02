@@ -5,8 +5,7 @@ journey.
 Write a menu driven C++ program to represent this as a graph using adjacency matrix
 and adjacency list. The node can be represented by the airport name or name of the city.
 Check whether cities are connected through flight or not. Compare the storage
-representation.
-
+represenation
 
 #include<iostream>
 using namespace std;
