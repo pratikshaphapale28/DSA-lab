@@ -1,0 +1,241 @@
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+// Node of expression tree
+struct Node
+{
+    char data;
+    Node *left;
+    Node *right;
+
+    Node(char value)
+    {
+        data = value;
+        left = right = NULL;
+    }
+};
+
+// Check whether character is operator
+bool isOperator(char ch)
+{
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/');
+}
+
+// Construct expression tree from prefix expression
+Node* constructTree(string prefix)
+{
+    stack<Node*> s;
+
+    // Read prefix from right to left
+    for (int i = prefix.length() - 1; i >= 0; i--)
+    {
+        char ch = prefix[i];
+
+        // If operand, create node and push
+        if (!isOperator(ch))
+        {
+            s.push(new Node(ch));
+        }
+        else
+        {
+            // Operator: pop two nodes
+            Node *temp = new Node(ch);
+
+            temp->left = s.top();
+            s.pop();
+
+            temp->right = s.top();
+            s.pop();
+
+            s.push(temp);
+        }
+    }
+
+    return s.top();
+}
+
+// Recursive Inorder
+void inorder(Node *root)
+{
+    if (root == NULL)
+        return;
+
+    inorder(root->left);
+    cout << root->data << " ";
+    inorder(root->right);
+}
+
+// Recursive Preorder
+void preorder(Node *root)
+{
+    if (root == NULL)
+        return;
+
+    cout << root->data << " ";
+    preorder(root->left);
+    preorder(root->right);
+}
+
+// Recursive Postorder
+void postorder(Node *root)
+{
+    if (root == NULL)
+        return;
+
+    postorder(root->left);
+    postorder(root->right);
+    cout << root->data << " ";
+}
+
+// Non-recursive Inorder
+void inorderNonRecursive(Node *root)
+{
+    stack<Node*> s;
+    Node *current = root;
+
+    while (current != NULL || !s.empty())
+    {
+        // Go to leftmost node
+        while (current != NULL)
+        {
+            s.push(current);
+            current = current->left;
+        }
+
+        current = s.top();
+        s.pop();
+
+        cout << current->data << " ";
+
+        current = current->right;
+    }
+}
+
+// Non-recursive Preorder
+void preorderNonRecursive(Node *root)
+{
+    if (root == NULL)
+        return;
+
+    stack<Node*> s;
+    s.push(root);
+
+    while (!s.empty())
+    {
+        Node *current = s.top();
+        s.pop();
+
+        cout << current->data << " ";
+
+        // Push right first so left is processed first
+        if (current->right != NULL)
+            s.push(current->right);
+
+        if (current->left != NULL)
+            s.push(current->left);
+    }
+}
+
+// Non-recursive Postorder
+void postorderNonRecursive(Node *root)
+{
+    if (root == NULL)
+        return;
+
+    stack<Node*> s1, s2;
+
+    s1.push(root);
+
+    while (!s1.empty())
+    {
+        Node *current = s1.top();
+        s1.pop();
+
+        s2.push(current);
+
+        if (current->left != NULL)
+            s1.push(current->left);
+
+        if (current->right != NULL)
+            s1.push(current->right);
+    }
+
+    while (!s2.empty())
+    {
+        cout << s2.top()->data << " ";
+        s2.pop();
+    }
+}
+
+// Main function
+int main()
+{
+    string prefix;
+    Node *root = NULL;
+    int choice;
+
+    cout << "Enter Prefix Expression: ";
+    cin >> prefix;
+
+    root = constructTree(prefix);
+
+    do
+    {
+        cout << "\n\n----- EXPRESSION TREE MENU -----";
+        cout << "\n1. Recursive Inorder";
+        cout << "\n2. Recursive Preorder";
+        cout << "\n3. Recursive Postorder";
+        cout << "\n4. Non-Recursive Inorder";
+        cout << "\n5. Non-Recursive Preorder";
+        cout << "\n6. Non-Recursive Postorder";
+        cout << "\n7. Exit";
+
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+            case 1:
+                cout << "Recursive Inorder: ";
+                inorder(root);
+                break;
+
+            case 2:
+                cout << "Recursive Preorder: ";
+                preorder(root);
+                break;
+
+            case 3:
+                cout << "Recursive Postorder: ";
+                postorder(root);
+                break;
+
+            case 4:
+                cout << "Non-Recursive Inorder: ";
+                inorderNonRecursive(root);
+                break;
+
+            case 5:
+                cout << "Non-Recursive Preorder: ";
+                preorderNonRecursive(root);
+                break;
+
+            case 6:
+                cout << "Non-Recursive Postorder: ";
+                postorderNonRecursive(root);
+                break;
+
+            case 7:
+                cout << "Exiting...";
+                break;
+
+            default:
+                cout << "Invalid choice!";
+        }
+
+    } while (choice != 7);
+
+    return 0;
+}
