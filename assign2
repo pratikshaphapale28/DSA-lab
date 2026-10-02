@@ -3,3 +3,477 @@ tree by inserting the values in the order give, considering at the beginning wit
 binary search tree, after constructing a binary treei. Insert new node, ii. Find number of nodes in longest path from root, iii. Minimum data
 value found in the tree iv. Search a value v. Print values in ascending and descending
 order
+
+#include<iostream>
+#include<cstring>
+#include<stack>
+using namespace std;
+
+//Creating Node Structure
+class Node
+{
+    public:
+    char name[20];
+    Node *right, *left;
+
+};
+//Class containing functions of action which need to be performed
+class BST
+{
+    public:
+    Node *root;
+    BST()
+    {
+        root = NULL;
+    }
+
+    void create()
+    {
+        Node *curr, *temp;
+        char ans;
+        do
+        {
+            curr = new Node;
+            cout<<"\n Enter the name:- ";
+            cin>>curr -> name;
+            curr -> left = NULL;
+            curr -> right = NULL;
+
+            if(root == NULL)
+            {
+                root = curr;
+            }
+            else
+            {
+                temp = root;
+                while(temp != NULL)
+                {
+                    if(strcmp(curr -> name, temp -> name) > 0)
+                    {
+                        if(temp -> right == NULL)
+                        {
+                            temp -> right = curr;
+                            break;
+                        }
+                        else
+                            temp = temp -> right;
+                    }
+                    else
+                    {
+                        if(temp -> left == NULL)
+                        {
+                            temp -> left = curr;
+                            break;
+                        }
+                        else
+                        {
+                            temp = temp -> left;
+                        }
+                    }
+                }
+            }
+            cout << "\n Do you wnat to continue: ";
+            cin>>ans;
+        }while(ans =='y' || ans == 'Y');
+    }
+
+    Node* insert(Node* root, char value[])
+    {
+        if(root == NULL)
+        {
+            Node* newNode = new Node;
+            strcpy(newNode->name, value);
+            newNode->left = NULL;
+            newNode->right = NULL;
+            return newNode;
+        }
+
+        if(strcmp(value, root->name) > 0)
+        {
+            root->right = insert(root->right, value);
+        }
+        else
+        {
+            root->left = insert(root->left, value);
+        }
+
+        return root;
+    }
+
+    void inorder_r(Node* temp)
+    {
+        if(temp != NULL)
+        {
+            inorder_r(temp -> left);
+            cout<<temp -> name;
+            inorder_r(temp -> right);
+        }
+        else
+        return;
+    }
+
+    void preorder_r(Node *temp)
+    {
+        if(temp != NULL)
+        {
+            cout<<temp -> name;
+            preorder_r(temp -> left);
+            preorder_r(temp -> right);
+        }
+        else
+        return;
+    }
+
+    void postorder_r(Node *temp)
+    {
+        if(temp != NULL)
+        {
+            postorder_r(temp -> left);
+            postorder_r(temp -> right);
+            cout<<temp -> name;
+        }
+        else
+        return;
+    }
+
+    void inorder_nr()
+    {
+        Node *temp = root;
+        stack<Node*> st;
+        while(temp != NULL || !st.empty())
+        {
+            while(temp != NULL)
+            {
+                st.push(temp);
+                temp = temp -> left;
+            }
+            
+                temp = st.top();
+                st.pop();
+
+                cout<< temp -> name<<" ";
+                temp = temp -> right;
+        }
+    }
+
+    void preorder_nr()
+    {
+        if(root == NULL)
+            return;
+
+        stack<Node*> st;
+        st.push(root);
+
+        while(!st.empty())
+        {
+            Node *temp = st.top();
+            st.pop();
+
+            cout << temp->name << " ";
+
+            if(temp->right != NULL)
+                st.push(temp->right);
+
+            if(temp->left != NULL)
+                st.push(temp->left);
+        }
+    }
+
+    void postorder_nr()
+    {
+        if(root == NULL)
+            return;
+
+        stack<Node*> st1, st2;
+
+        st1.push(root);
+
+        while(!st1.empty())
+        {
+            Node *temp = st1.top();
+            st1.pop();
+
+            st2.push(temp);
+
+            if(temp->left != NULL)
+                st1.push(temp->left);
+
+            if(temp->right != NULL)
+                st1.push(temp->right);
+        }
+
+        while(!st2.empty())
+        {
+            Node *temp = st2.top();
+            st2.pop();
+
+            cout << temp->name << " ";
+        }
+    }
+
+    Node* searchr(Node *root, char key[])
+    {
+        if(root == NULL || strcmp(root -> name,key) == 0)
+        {
+            return root;
+        }
+        if(strcmp(key,root -> name) < 0)
+            return searchr(root -> left, key);
+
+        return searchr(root -> right,key);
+    }
+
+    Node* searchnr(char key[])
+    {
+        Node *temp;
+        temp = root;
+        while(temp != NULL)
+        {
+            if(strcmp(key,temp -> name) < 0)
+                temp = temp -> left;
+
+            else if(strcmp(key,temp -> name) > 0)
+            temp = temp -> right;
+
+            else
+            break;
+        }
+        return temp;
+    }
+
+    int height(Node *root)
+    {
+        int heightL,heightR;
+        if(root == NULL)
+            return 0;
+        if(root -> left == NULL && root -> right == NULL)
+            return 0;
+        heightL = height(root -> left);
+        heightR = height(root -> right);
+        if(heightR > heightL)
+            return(heightR + 1);
+        return(heightL + 1);
+    }
+
+    void minimum()
+    {
+        if(root == NULL)
+        {
+            cout<<"Tree is empty"<<endl;
+            return;
+        }
+        Node *temp = root;
+        while(temp -> left != NULL)
+            temp = temp -> left;
+        cout<<"Minimum Value "<<temp -> name<<endl;
+
+    }
+
+    void maximum()
+    {
+        if(root == NULL)
+        {
+            cout<<"Tree is empty"<<endl;
+            return;
+        }
+        Node *temp = root;
+        while(temp -> right != NULL)
+            temp = temp -> right;
+        cout<<"Maximum Value "<<temp -> name<<endl;
+
+    }
+
+    void Descending(Node *temp)
+    {
+    if(temp != NULL)
+    {
+        Descending(temp->right);
+        cout << temp->name << " ";
+        Descending(temp->left);
+    }
+    }
+
+
+};
+
+int main()
+{
+    int choice;
+    BST b;
+
+    do
+    {
+        cout<<"1.Create a Tree"<<endl;
+        cout<<"2.Display a Tree"<<endl;
+        cout<<"3.Recursive Inorder Traversal"<<endl;
+        cout<<"4.Recursive Preorder Traversal"<<endl;
+        cout<<"5.Recursive Postorder Traversal"<<endl;
+        cout<<"6.Non-Recursive Inorder Traversal"<<endl;
+        cout<<"7.Non-Recursive Preorder Traversal"<<endl;
+        cout<<"8.Non-Recursive Postorder Traversal"<<endl;
+        cout<<"9.Insert a Node"<<endl;
+        cout<<"10.Maximum Value Node"<<endl;
+        cout<<"11.Minimum Value Node"<<endl;
+        cout<<"12.Height of Tree"<<endl;
+        cout<<"13.Search For an element recursively"<<endl;
+        cout<<"14.Search For an element Non-recursively"<<endl;
+        cout<<"15.Display tree in Descending Order"<<endl;
+        cout<<"16.Exit"<<endl;
+        cout<<"Enter your choice"<<endl;
+        cin>>choice;
+
+        switch(choice)
+        {
+            case 1:
+            {
+            b.create();
+            break;
+            }
+
+            case 2:
+            {
+                if(b.root == NULL)
+                    cout << "Tree is empty." << endl;
+                else
+                {
+                    cout << "Tree: ";
+                    b.inorder_r(b.root);
+                    cout << endl;
+                }
+                break;
+            }   
+
+            case 3:
+            {
+            cout<<"Recursive Inorder"<<endl;
+            b.inorder_r(b.root);
+            cout<<endl;
+            break;
+            }
+
+            case 4:
+            {
+            cout<<"Recursive Preorder ";
+            b.preorder_r(b.root);
+            cout<<endl;
+            break;
+            }
+
+            case 5:
+            {
+            cout<<"Recursive Postorder ";
+            b.postorder_r(b.root);
+            cout<<endl;
+            break;
+            }
+
+            case 6:
+            {
+            cout<<"Non-Recursive Inorder"<<endl;
+            b.inorder_nr();
+            cout<<endl;
+            break;
+            }
+
+            case 7:
+            {
+            cout<<"Non-Recursive Preorder ";
+            b.preorder_nr();
+            cout<<endl;
+            break;
+            }
+
+            case 8:
+            {
+            cout<<"Non-Recursive Postorder ";
+            b.postorder_nr();
+            cout<<endl;
+            break;
+            }
+
+            case 9:
+            {
+                char node[20];
+                cout << "Enter Node to be inserted: ";
+                cin >> node;
+                b.root = b.insert(b.root, node);
+                cout << "Node inserted successfully!" << endl;
+                break;
+            }
+
+            case 10:
+            {
+            b.maximum();
+            break;
+            }
+
+            case 11:
+            {
+            b.minimum();
+            break;
+            }
+
+            case 12:
+            {
+            cout << "Height of Tree: " << b.height(b.root) << endl;
+            break;
+            }
+
+            case 13:
+            {
+                char key[20];
+
+                cout << "Enter name to search: ";
+                cin >> key;
+
+                Node* result = b.searchr(b.root, key);
+
+                if(result != NULL)
+                    cout << "Element found: " << result->name << endl;
+                else
+                    cout << "Element not found." << endl;
+
+                break;
+            }
+
+            case 14:
+            {
+                char key[20];
+
+                cout << "Enter name to search: ";
+                cin >> key;
+
+                Node* result = b.searchnr(key);
+
+                if(result != NULL)
+                    cout << "Element found: " << result->name << endl;
+                else
+                    cout << "Element not found." << endl;
+
+                break;
+            }
+
+            case 15:
+            {
+            cout << "Descending Order: ";
+            b.Descending(b.root);
+            cout << endl;
+            break;
+            }
+            
+            case 16:
+            {
+            cout<<"Exiting Program...!!"<<endl;
+            break;
+            }
+
+            default:
+            {
+            cout<<"Invalid Choice..."<<endl;
+            break;
+            }
+        }
+
+    }while(choice != 16);
+
+}
